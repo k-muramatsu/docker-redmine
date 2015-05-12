@@ -34,6 +34,7 @@
 - [Plugins](#plugins)
   - [Installing Plugins](#installing-plugins)
   - [Uninstalling Plugins](#uninstalling-plugins)
+  - [Supported Plugins](#supported-plugins)
 - [Themes](#plugins)
   - [Installing Themes](#installing-themes)
   - [Uninstalling Themes](#uninstalling-themes)
@@ -656,6 +657,16 @@ rm -rf /opt/redmine/data/plugins/recurring_tasks
 ```
 
 Now when the image is started the plugin will be gone.
+
+## Supported Plugins
+
+You can set following plugins configuration:
+
+- [Redmine SCM Creator](http://projects.andriylesyuk.com/projects/scm-creator)
+  - **SVN_PATH**: This option specifies the path to the SCM root directory (the directory where repositories are stored). For Subversion this should be /var/lib/svn.
+  - **SVN_URL**: The url option can be used to specify an external URL for a repository (e.g. http://subversion.andriylesyuk.com/redmine-svn). 
+  - **GIT_PATH**: This option specifies the path to the SCM root directory (the directory where repositories are stored). For Git this should be /var/lib/git.
+  - **GIT_URL**: The url option can be used to specify an external URL for a repository (e.g. http://git.andriylesyuk.com/redmine-git).
 
 # Themes
 
