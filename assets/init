@@ -4,6 +4,7 @@ set -e
 INSTALL_DIR="/home/redmine/redmine"
 CONFIG_DIR="${INSTALL_DIR}/config"
 DATA_DIR="/home/redmine/data"
+BIN_DIR="/home/redmine/bin"
 LOG_DIR="/var/log/redmine"
 SSL_CERTIFICATES_DIR="${DATA_DIR}/certs"
 
@@ -18,6 +19,11 @@ DB_USER=${DB_USER:-}
 DB_PASS=${DB_PASS:-}
 DB_POOL=${DB_POOL:-5}
 DB_TYPE=${DB_TYPE:-}
+
+SVN_URL=${SVN_URL:-svn}
+GIT_URL=${GIT_URL:-git}
+SVN_PATH=${SVN_PATH:-/var/www/svn}
+GIT_PATH=${GIT_PATH:-/var/www/git}
 
 MEMCACHED_HOST=${MEMCACHED_HOST:-}
 MEMCACHED_PORT=${MEMCACHED_PORT:-}
@@ -234,6 +240,7 @@ case "${REDMINE_HTTPS}" in
   *) cp ${SYSCONF_TEMPLATES_DIR}/nginx/redmine /etc/nginx/sites-enabled/redmine ;;
 esac
 sudo -u redmine -H cp ${SYSCONF_TEMPLATES_DIR}/redmine/database.yml config/database.yml
+sudo -u redmine -H cp ${SYSCONF_TEMPLATES_DIR}/redmine/scm.yml config/scm.yml
 sudo -u redmine -H cp ${SYSCONF_TEMPLATES_DIR}/redmine/unicorn.rb config/unicorn.rb
 [ "${SMTP_ENABLED}" == "true" ] && \
 sudo -u redmine -H cp ${SYSCONF_TEMPLATES_DIR}/redmine/smtp_settings.rb config/initializers/smtp_settings.rb
@@ -252,6 +259,7 @@ case "${REDMINE_HTTPS}" in
   *) [ -f ${USERCONF_TEMPLATES_DIR}/nginx/redmine ]                && cp ${USERCONF_TEMPLATES_DIR}/nginx/redmine /etc/nginx/sites-enabled/redmine ;;
 esac
 [ -f ${USERCONF_TEMPLATES_DIR}/redmine/database.yml ]              && sudo -u redmine -H cp ${USERCONF_TEMPLATES_DIR}/redmine/database.yml config/database.yml
+[ -f ${USERCONF_TEMPLATES_DIR}/redmine/scm.yml ]              && sudo -u redmine -H cp ${USERCONF_TEMPLATES_DIR}/redmine/scm.yml config/scm.yml
 [ -f ${USERCONF_TEMPLATES_DIR}/redmine/unicorn.rb ]                && sudo -u redmine -H cp ${USERCONF_TEMPLATES_DIR}/redmine/unicorn.rb  config/unicorn.rb
 [ "${SMTP_ENABLED}" == "true" ] && \
 [ -f ${USERCONF_TEMPLATES_DIR}/redmine/smtp_settings.rb ]          && sudo -u redmine -H cp ${USERCONF_TEMPLATES_DIR}/redmine/smtp_settings.rb config/initializers/smtp_settings.rb
@@ -277,6 +285,12 @@ sudo -u redmine -H sed 's/{{DB_NAME}}/'"${DB_NAME}"'/' -i config/database.yml
 sudo -u redmine -H sed 's/{{DB_USER}}/'"${DB_USER}"'/' -i config/database.yml
 sudo -u redmine -H sed 's/{{DB_PASS}}/'"${DB_PASS}"'/' -i config/database.yml
 sudo -u redmine -H sed 's/{{DB_POOL}}/'"${DB_POOL}"'/' -i config/database.yml
+
+# configure scm (For redmine_scm plugin)
+sudo -u redmine -H sed 's,{{SVN_URL}},'${SVN_URL}',' -i config/scm.yml
+sudo -u redmine -H sed 's,{{GIT_URL}},'${GIT_URL}',' -i config/scm.yml
+sudo -u redmine -H sed 's,{{SVN_PATH}},'${SVN_PATH}',' -i config/scm.yml
+sudo -u redmine -H sed 's,{{GIT_PATH}},'${GIT_PATH}',' -i config/scm.yml
 
 # configure memcached
 if [ "${MEMCACHE_ENABLED}" == "true" ]; then
