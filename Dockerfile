@@ -12,7 +12,7 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv C3173AA6 \
       imagemagick subversion git cvs bzr mercurial rsync locales openssh-client \
       gcc g++ make patch pkg-config libc6-dev zlib1g-dev libxml2-dev \
       libmysqlclient18 libpq5 libyaml-0-2 libcurl3 libssl1.0.0 \
-      libxslt1.1 libffi6 zlib1g gsfonts libcurl4-openssl-dev \
+      libxslt1.1 libffi6 zlib1g gsfonts libcurl4-openssl-dev libyaml-dev \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && rm -rf /var/lib/apt/lists/* # 20140918
 
@@ -20,7 +20,7 @@ RUN wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p551.tar.gz -O - | tar 
     cd /tmp/ruby-1.9.3-p551/ && ./configure --enable-pthread --prefix=/usr && make && make install && \
     cd /tmp/ruby-1.9.3-p551/ext/openssl/ && ruby extconf.rb && make && make install && \
     cd /tmp/ruby-1.9.3-p551/ext/zlib && ruby extconf.rb && make && make install && cd /tmp \
-    rm -rf /tmp/ruby-1.9.3-p551 && gem install --no-ri --no-rdoc bundler # mysql2
+    rm -rf /tmp/ruby-1.9.3-p551 && gem install --no-ri --no-rdoc bundler
 
 ADD assets/setup/ /app/setup/
 RUN chmod 755 /app/setup/install

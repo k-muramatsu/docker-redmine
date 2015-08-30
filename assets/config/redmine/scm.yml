@@ -2,10 +2,7 @@ production:
   deny_delete: false
   auto_create: false
   force_repository: false
-#  pre_create: /usr/local/bin/pre-create.sh
   post_create: /home/redmine/bin/redmine/post-create.sh
-#  pre_delete: /usr/local/bin/pre-delete.sh
-#  post_delete: /usr/local/bin/post-delete.sh
   max_repos: 0
   only_creator: false
   allow_add_local: false
@@ -20,5 +17,5 @@ production:
     options: --bare
     url: {{GIT_URL}}
     update_server_info: true
-    git_ext: true
+    git_ext: {{GIT_EXT}}
     append: trunk
