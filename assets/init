@@ -22,8 +22,9 @@ DB_TYPE=${DB_TYPE:-}
 
 SVN_URL=${SVN_URL:-svn}
 GIT_URL=${GIT_URL:-git}
-SVN_PATH=${SVN_PATH:-/var/www/svn}
-GIT_PATH=${GIT_PATH:-/var/www/git}
+SVN_PATH=${SVN_PATH:-/var/repos/svn}
+GIT_PATH=${GIT_PATH:-/var/repos/git}
+GIT_EXT=${GIT_EXT:-false}
 
 MEMCACHED_HOST=${MEMCACHED_HOST:-}
 MEMCACHED_PORT=${MEMCACHED_PORT:-}
@@ -291,6 +292,7 @@ sudo -u redmine -H sed 's,{{SVN_URL}},'${SVN_URL}',' -i config/scm.yml
 sudo -u redmine -H sed 's,{{GIT_URL}},'${GIT_URL}',' -i config/scm.yml
 sudo -u redmine -H sed 's,{{SVN_PATH}},'${SVN_PATH}',' -i config/scm.yml
 sudo -u redmine -H sed 's,{{GIT_PATH}},'${GIT_PATH}',' -i config/scm.yml
+sudo -u redmine -H sed 's,{{GIT_EXT}},'${GIT_EXT}',' -i config/scm.yml
 
 # configure memcached
 if [ "${MEMCACHE_ENABLED}" == "true" ]; then
@@ -384,6 +386,13 @@ fi
 mkdir -p ${DATA_DIR}/files
 chmod 755 ${DATA_DIR}/files
 chown redmine:redmine ${DATA_DIR}/files
+
+mkdir /var/repos
+chown redmine:redmine /var/repos
+mkdir -p ${DATA_DIR}/repositories/svn
+mkdir -p ${DATA_DIR}/repositories/git
+ln -sf ${DATA_DIR}/repositories/svn ${SVN_PATH}
+ln -sf ${DATA_DIR}/repositories/git ${GIT_PATH}
 
 # symlink file store
 rm -rf files
