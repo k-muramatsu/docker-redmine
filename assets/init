@@ -387,12 +387,17 @@ mkdir -p ${DATA_DIR}/files
 chmod 755 ${DATA_DIR}/files
 chown redmine:redmine ${DATA_DIR}/files
 
-mkdir /var/repos
-chown redmine:redmine /var/repos
+mkdir -p ${SVN_PATH}
+mkdir -p ${GIT_PATH}
+rm -rf ${SVN_PATH}
+rm -rf ${GIT_PATH}
 mkdir -p ${DATA_DIR}/repositories/svn
 mkdir -p ${DATA_DIR}/repositories/git
 ln -sf ${DATA_DIR}/repositories/svn ${SVN_PATH}
 ln -sf ${DATA_DIR}/repositories/git ${GIT_PATH}
+chown redmine:redmine ${SVN_PATH}
+chown redmine:redmine ${GIT_PATH}
+
 
 # symlink file store
 rm -rf files
