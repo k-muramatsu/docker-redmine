@@ -187,6 +187,21 @@ case "${REDMINE_HTTPS}" in
     ;;
 esac
 
+## Adapt uid and gid for redmine:redmine
+USERMAP_ORIG_UID=$(id -u redmine)
+USERMAP_ORIG_GID=$(id -g redmine)
+USERMAP_GID=${USERMAP_GID:-${USERMAP_UID:-$USERMAP_ORIG_GID}}
+USERMAP_UID=${USERMAP_UID:-$USERMAP_ORIG_UID}
+if [[ ${USERMAP_UID} != ${USERMAP_ORIG_UID} ]] || [[ ${USERMAP_GID} != ${USERMAP_ORIG_GID} ]]; then
+  echo "Adapting uid and gid for redmine:redmine to $USERMAP_UID:$USERMAP_GID"
+  groupmod -g ${USERMAP_GID} ${REDMINE_USER}
+  sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
+  find ${REDMINE_HOME} -path ${REDMINE_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h redmine:redmine
+fi
+
+# take ownership of entire data directory
+chown -R redmine:redmine ${REDMINE_DATA_DIR}
+
 # create the .ssh directory
 mkdir -p ${DATA_DIR}/dotfiles/.ssh/
 chown -R redmine:redmine ${DATA_DIR}/dotfiles/.ssh/
