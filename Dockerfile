@@ -16,6 +16,15 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv C3173AA6 \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && rm -rf /var/lib/apt/lists/* # 20140918
 
+RUN echo "deb http://extras.ubuntu.com/ubuntu saucy main" >> /etc/apt/sources.list \
+ && echo "deb http://de.archive.ubuntu.com/ubuntu/ saucy main universe restricted multiverse" >> /etc/apt/sources.list \
+ && apt-get remove subversion libsvn1 \
+ && apt-get update \
+ && apt-get install subversion=1.7.9-1+nmu6ubuntu3 libsvn1=1.7.9-1+nmu6ubuntu3 \
+ && echo subversion hold | sudo dpkg --set-selections \
+ && echo libsvn1 hold | sudo dpkg --set-selections \
+ && echo libserf1 hold | sudo dpkg --set-selections
+
 RUN wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p551.tar.gz -O - | tar -zxf - -C /tmp/ && \
     cd /tmp/ruby-1.9.3-p551/ && ./configure --enable-pthread --prefix=/usr && make && make install && \
     cd /tmp/ruby-1.9.3-p551/ext/openssl/ && ruby extconf.rb && make && make install && \
