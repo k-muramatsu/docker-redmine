@@ -16,11 +16,12 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv C3173AA6 \
  && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && rm -rf /var/lib/apt/lists/* # 20140918
 
-RUN echo "deb http://extras.ubuntu.com/ubuntu saucy main" >> /etc/apt/sources.list \
- && echo "deb http://de.archive.ubuntu.com/ubuntu/ saucy main universe restricted multiverse" >> /etc/apt/sources.list \
- && apt-get remove subversion libsvn1 \
- && apt-get update \
- && apt-get install subversion=1.7.9-1+nmu6ubuntu3 libsvn1=1.7.9-1+nmu6ubuntu3 \
+RUN apt-key adv --keyserver keyserver.ubuntu.com --recv 16126D3A3E5C1192 \
+ && apt-get remove subversion libsvn1 -y \
+ && wget -q -O - http://opensource.wandisco.com/wandisco-debian.gpg | sudo apt-key add -
+ && sh -c 'echo "deb http://opensource.wandisco.com/debian/ wheezy svn17" > /etc/apt/sources.list.d/wandisco-subversion.list'
+ && apt-get update -y \
+ && apt-get install -y subversion=1.7.21-1+WANdisco libsvn1=1.7.21-1+WANdisco
  && echo subversion hold | sudo dpkg --set-selections \
  && echo libsvn1 hold | sudo dpkg --set-selections \
  && echo libserf1 hold | sudo dpkg --set-selections
