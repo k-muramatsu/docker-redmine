@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+REDMINE_HOME="/home/redmine"
 INSTALL_DIR="/home/redmine/redmine"
 CONFIG_DIR="${INSTALL_DIR}/config"
 DATA_DIR="/home/redmine/data"
