@@ -197,11 +197,11 @@ if [[ ${USERMAP_UID} != ${USERMAP_ORIG_UID} ]] || [[ ${USERMAP_GID} != ${USERMAP
   echo "Adapting uid and gid for redmine:redmine to $USERMAP_UID:$USERMAP_GID"
   groupmod -g ${USERMAP_GID} redmine
   sed -i -e "s/:${USERMAP_ORIG_UID}:${USERMAP_GID}:/:${USERMAP_UID}:${USERMAP_GID}:/" /etc/passwd
-  find ${REDMINE_HOME} -path ${REDMINE_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h redmine:redmine
+  find ${REDMINE_HOME} -path ${DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h redmine:redmine
 fi
 
 # take ownership of entire data directory
-chown -R redmine:redmine ${REDMINE_DATA_DIR}
+chown -R redmine:redmine ${DATA_DIR}
 
 # create the .ssh directory
 mkdir -p ${DATA_DIR}/dotfiles/.ssh/
