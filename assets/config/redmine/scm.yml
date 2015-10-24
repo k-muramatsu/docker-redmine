@@ -9,7 +9,7 @@ production:
   allow_pickup: false
   svn:
     path: {{SVN_PATH}}
-    svnadmin: /usr/bin/svnadmin
+    svnadmin: /usr/local/bin/svnadmin
     url: {{SVN_URL}}
   git:
     path: {{GIT_PATH}}
