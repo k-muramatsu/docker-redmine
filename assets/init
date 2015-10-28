@@ -47,6 +47,9 @@ REDMINE_PORT=${REDMINE_PORT:-}
 REDMINE_HTTPS=${REDMINE_HTTPS:-false}
 REDMINE_RELATIVE_URL_ROOT=${REDMINE_RELATIVE_URL_ROOT:-}
 REDMINE_FETCH_COMMITS=${REDMINE_FETCH_COMMITS:-disable}
+REDMINE_SEND_REMINDERS_DAYS=${REDMINE_SEND_REMINDERS_DAYS:-7}
+REDMINE_SEND_REMINDERS_MINUTE=${REDMINE_SEND_REMINDERS_MINUTE:-0}
+REDMINE_SEND_REMINDERS_HOUR=${REDMINE_SEND_REMINDERS_HOUR:-0}
 
 REDMINE_HTTPS_HSTS_ENABLED=${REDMINE_HTTPS_HSTS_ENABLED:-true}
 REDMINE_HTTPS_HSTS_MAXAGE=${REDMINE_HTTPS_HSTS_MAXAGE:-31536000}
@@ -496,6 +499,7 @@ case "${REDMINE_FETCH_COMMITS}" in
   hourly|daily|monthly)
     crontab -u redmine -l >/tmp/cron.redmine
     echo "@${REDMINE_FETCH_COMMITS} cd /home/redmine/redmine && ./script/rails runner \"Repository.fetch_changesets\" -e production >> log/cron_rake.log 2>&1" >>/tmp/cron.redmine
+    echo "${REDMINE_SEND_REMINDERS_MINUTE} ${REDMINE_SEND_REMINDERS_HOUR} * * *  cd /home/redmine/redmine && rake redmine:send_reminders days=${REDMINE_SEND_REMINDERS_DAYS} RAILS_ENV=production >> log/cron.log 2>&1" >>/tmp/cron.redmine
     crontab -u redmine /tmp/cron.redmine
     rm -rf /tmp/cron.redmine
     ;;
