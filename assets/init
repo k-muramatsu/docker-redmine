@@ -47,6 +47,7 @@ REDMINE_PORT=${REDMINE_PORT:-}
 REDMINE_HTTPS=${REDMINE_HTTPS:-false}
 REDMINE_RELATIVE_URL_ROOT=${REDMINE_RELATIVE_URL_ROOT:-}
 REDMINE_FETCH_COMMITS=${REDMINE_FETCH_COMMITS:-disable}
+REDMINE_SEND_REMINDERS_ENABLE=${REDMINE_SEND_REMINDERS_ENABLE:-false}
 REDMINE_SEND_REMINDERS_DAYS=${REDMINE_SEND_REMINDERS_DAYS:-7}
 REDMINE_SEND_REMINDERS_MINUTE=${REDMINE_SEND_REMINDERS_MINUTE:-0}
 REDMINE_SEND_REMINDERS_HOUR=${REDMINE_SEND_REMINDERS_HOUR:-0}
@@ -494,16 +495,26 @@ if [ "${REDMINE_VERSION}" != "${CURRENT_VERSION}" ]; then
   echo "${REDMINE_VERSION}" | sudo -u redmine -H tee --append ${DATA_DIR}/tmp/VERSION >/dev/null
 fi
 
+crontab -u redmine -l >/tmp/cron.redmine
+
 # create a cronjob to periodically fetch commits
 case "${REDMINE_FETCH_COMMITS}" in
   hourly|daily|monthly)
-    crontab -u redmine -l >/tmp/cron.redmine
-    echo "@${REDMINE_FETCH_COMMITS} cd /home/redmine/redmine && ./script/rails runner \"Repository.fetch_changesets\" -e production >> log/cron_rake.log 2>&1" >>/tmp/cron.redmine
-    echo "${REDMINE_SEND_REMINDERS_MINUTE} ${REDMINE_SEND_REMINDERS_HOUR} * * *  cd /home/redmine/redmine && rake redmine:send_reminders days=${REDMINE_SEND_REMINDERS_DAYS} RAILS_ENV=production >> log/cron.log 2>&1" >>/tmp/cron.redmine
-    crontab -u redmine /tmp/cron.redmine
-    rm -rf /tmp/cron.redmine
+		if ! grep -q 'Repository.fetch_changesets' /tmp/cron.redmine; then
+			echo "@${REDMINE_FETCH_COMMITS} cd /home/redmine/redmine && ./script/rails runner \"Repository.fetch_changesets\" -e production >> log/cron_rake.log 2>&1" >>/tmp/cron.redmine
+		fi
     ;;
 esac
+
+# create a cronjob to send reminders
+if [ "${REDMINE_SEND_REMINDERS_ENABLE}" == "true" ]; then
+	if ! grep -q 'redmine:send_reminders' /tmp/cron.redmine; then
+		echo "${REDMINE_SEND_REMINDERS_MINUTE} ${REDMINE_SEND_REMINDERS_HOUR} * * *  cd /home/redmine/redmine && rake redmine:send_reminders days=${REDMINE_SEND_REMINDERS_DAYS} RAILS_ENV=production >> log/cron.log 2>&1" >>/tmp/cron.redmine
+	fi
+fi
+
+crontab -u redmine /tmp/cron.redmine
+rm -rf /tmp/cron.redmine
 
 # remove vendor/bundle and symlink to ${DATA_DIR}/tmp/bundle
 rm -rf vendor/bundle Gemfile.lock
