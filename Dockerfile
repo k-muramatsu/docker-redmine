@@ -26,14 +26,14 @@ RUN apt-key adv --keyserver keyserver.ubuntu.com --recv C3173AA6 \
 # && echo libsvn1 hold | dpkg --set-selections \
 # && echo libserf1 hold | sudo dpkg --set-selections
 
-RUN wget http://ftp.meisei-u.ac.jp/mirror/apache/dist//apr/apr-1.5.2.tar.gz \
+RUN wget http://archive.apache.org/dist/apr/apr-1.5.2.tar.gz \
  && tar xvfz apr-1.5.2.tar.gz -C /tmp \
  && cd /tmp/apr-1.5.2 \
  && ./configure \
  && make \
  && make install
 
-RUN wget http://ftp.meisei-u.ac.jp/mirror/apache/dist//apr/apr-util-1.5.4.tar.gz \
+RUN wget http://archive.apache.org/dist/apr/apr-util-1.5.4.tar.gz \
  && tar xvfz apr-util-1.5.4.tar.gz  -C /tmp \
  && cd /tmp/apr-util-1.5.4 \
  && ./configure --with-apr=/usr/local/apr \
