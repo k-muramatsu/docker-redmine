@@ -10,3 +10,28 @@ jobs:
       - run:
           name: Build Dockerfile
           command: docker build -t kenmu/anaredmine:latest .
+      - run:
+          name: Save image
+          command: docker image save kenmu/anaredmine:latest > ./docker-image.tar
+      - persist_to_workspace:
+          root: .
+          paths:
+            - ./docker-image.tar
+release-latest:
+    docker:
+      - image: docker:17.05.0-ce-git
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: Install Dependencies
+          command: apk update && apk add ca-certificates && update-ca-certificates && apk add openssl
+      - attach_workspace:
+          at: .
+      - run:
+          name: Load image from tar
+          command: docker load -i ./docker-image.tar
+      - run:
+          command: docker login -u ${DOCKER_USER} -p ${DOCKER_PASS}
+      - run:
+          command: docker push kenmu/anaredmine
