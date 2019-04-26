@@ -62,7 +62,7 @@ RUN wget https://cache.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p551.tar.gz -O - | 
     cd /tmp/ruby-1.9.3-p551/ && ./configure --enable-pthread --prefix=/usr && make && make install && \
     cd /tmp/ruby-1.9.3-p551/ext/openssl/ && ruby extconf.rb && make && make install && \
     cd /tmp/ruby-1.9.3-p551/ext/zlib && ruby extconf.rb && make && make install && cd /tmp && \
-    rm -rf /tmp/ruby-1.9.3-p551 && gem install --no-ri --no-rdoc bundler
+    rm -rf /tmp/ruby-1.9.3-p551 && gem install --no-ri --no-rdoc bundler -v "1.17.3"
 
 RUN wget http://ftp.gnu.org/pub/gnu/libiconv/libiconv-1.14.tar.gz -O - | tar -zxf - -C /tmp/ && \
 		cd /tmp && wget http://apolloron.org/software/libiconv-1.14-ja/libiconv-1.14-ja-2.patch && \
