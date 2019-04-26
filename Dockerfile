@@ -58,7 +58,7 @@ RUN wget http://archive.apache.org/dist/subversion/subversion-1.6.23.tar.bz2 \
  && make \
  && make install
 
-RUN wget ftp://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p551.tar.gz -O - | tar -zxf - -C /tmp/ && \
+RUN wget https://cache.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p551.tar.gz -O - | tar -zxf - -C /tmp/ && \
     cd /tmp/ruby-1.9.3-p551/ && ./configure --enable-pthread --prefix=/usr && make && make install && \
     cd /tmp/ruby-1.9.3-p551/ext/openssl/ && ruby extconf.rb && make && make install && \
     cd /tmp/ruby-1.9.3-p551/ext/zlib && ruby extconf.rb && make && make install && cd /tmp && \
