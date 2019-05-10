@@ -59,7 +59,7 @@ echo "${PG_GEM}" >> Gemfile
 echo "${MYSQL2_GEM}" >> Gemfile
 
 # add gems for app server and memcache support
-echo 'gem "unicorn"' >> Gemfile
+echo 'gem "unicorn", "~> 4.9.0"' >> Gemfile
 echo 'gem "dalli", "~> 2.7.0"' >> Gemfile
 
 # install gems, use cache if available
